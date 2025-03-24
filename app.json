@@ -18,11 +18,18 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#ffffff",
+        "package": "com.jasmeetkaur.taskmanager"
+      },
+      "package": "com.techgirljassi.taskmanagerapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4e5f2c0f-9d15-4e2b-ab15-ab018d2b7fd8"
+      }
     }
   }
 }
