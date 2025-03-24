@@ -8,8 +8,6 @@ import { useUser } from "../context/UserContext";
 function Root() {
   const { user } = useUser();
 
-  console.log(user);
-
   return (
     <>
       <SafeAreaView style={styles.safeAreaView}>

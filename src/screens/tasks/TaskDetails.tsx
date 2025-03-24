@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -6,37 +6,21 @@ import {
   ScrollView,
   StyleSheet,
 } from "react-native";
-import Button from "../components/Button";
-import { Header } from "../components/Header";
+import { Button } from "../../components/Button";
+import { Header } from "../../components/Header";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { StatusBadge } from "../components/StatusBadge";
-import { colors } from "../constants";
+import { StatusBadge } from "../../components/StatusBadge";
+import { colors } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
-import { deleteTasks, updateTasks, getTaskById } from "../api/tasks";
-import { useTask } from "../context/TaskContext";
+import { deleteTasks, updateTasks } from "../../api/tasks";
+import { useTask } from "../../context/TaskContext";
 
-function TaskDetails({ route }) {
-  const [task, setTask] = useState(null);
-  const { params } = route;
+function TaskDetails() {
   const navigation = useNavigation();
-  const { fetchTasks } = useTask();
-
-  const fetchTask = async () => {
-    await getTaskById(params.taskId)
-      .then((res) => {
-        if (res.status) {
-          setTask(res.data);
-        }
-      })
-      .catch((error) => console.log(error));
-  };
-
-  useEffect(() => {
-    fetchTask();
-  }, []);
+  const { selectedTask, setSelectedTask, fetchTasks } = useTask();
 
   const onDeleteTask = async () => {
-    await deleteTasks({ taskId: task._id })
+    await deleteTasks({ taskId: selectedTask._id })
       .then(async (res) => {
         if (res.status) {
           await fetchTasks();
@@ -47,10 +31,10 @@ function TaskDetails({ route }) {
   };
 
   const markCompleted = async () => {
-    await updateTasks({ status: "completed", taskId: task._id })
+    await updateTasks({ status: "completed", taskId: selectedTask._id })
       .then((res) => {
         if (res.status) {
-          setTask(res.data);
+          setSelectedTask(res.data);
         }
       })
       .catch((error) => console.log(error));
@@ -61,48 +45,61 @@ function TaskDetails({ route }) {
       <Header showBack={true} title="Task Details">
         <View style={styles.headerIconsWrapper}>
           <TouchableWithoutFeedback
-            onPress={() =>
-              navigation.navigate("EditTask", {
-                task: params.task,
-              })
-            }
+            onPress={() => navigation.navigate("EditTask" as never)}
           >
             <Feather name="edit" size={20} color="black" />
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={onDeleteTask}>
+          <TouchableWithoutFeedback
+            onPress={() =>
+              navigation.navigate("ConfirmationModal", {
+                onConfirm: onDeleteTask,
+                message: "You will not be able to restore this task later.",
+                heading: "Are you sure you want to delete this task?",
+              })
+            }
+          >
             <MaterialIcons name="delete" size={26} color={colors.red} />
           </TouchableWithoutFeedback>
         </View>
       </Header>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {task && (
+        {selectedTask && (
           <>
-            <Text style={styles.title}>{task?.title}</Text>
+            <Text style={styles.title}>{selectedTask?.title}</Text>
             <View style={{ marginTop: 10 }}>
-              <StatusBadge status={task?.status} />
+              <StatusBadge status={selectedTask?.status} />
             </View>
             <View style={styles.dateTimeContainer}>
               <Text style={styles.date}>
-                {new Date(task?.date).toLocaleDateString()}
+                {new Date(selectedTask?.date).toLocaleDateString()}
               </Text>
               <View style={styles.divider} />
               <Text style={styles.time}>
-                {`${new Date(task?.startTime).toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })} - ${new Date(task?.endTime).toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}`}
+                {`${new Date(selectedTask?.startTime).toLocaleTimeString(
+                  "en-GB",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )} - ${new Date(selectedTask?.endTime).toLocaleTimeString(
+                  "en-GB",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )}`}
               </Text>
             </View>
             <Text style={styles.descriptionHeading}>Description</Text>
-            <Text style={styles.descriptionText}>{task?.description}</Text>
+            <Text style={styles.descriptionText}>
+              {selectedTask?.description}
+            </Text>
           </>
         )}
       </ScrollView>
       <View style={styles.buttonWrapper}>
         <Button
+          isLoading={false}
           onSubmit={markCompleted}
           text="Mark Completed"
           color={colors.blue}

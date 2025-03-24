@@ -7,12 +7,12 @@ import {
   StyleSheet,
 } from "react-native";
 
-function Button({ color, text, onSubmit, isLoading }) {
+export function Button({ color, text, onSubmit, isLoading }) {
   return (
     <TouchableWithoutFeedback onPress={onSubmit}>
       <View style={[styles.button, { backgroundColor: color }]}>
         {isLoading ? (
-          <ActivityIndicator size="large" color="white" />
+          <ActivityIndicator size="small" color="white" />
         ) : (
           <Text style={styles.buttonText}>{text}</Text>
         )}
@@ -26,11 +26,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: "center",
     borderRadius: 10,
+    flex: 1,
   },
   buttonText: {
     color: "white",
     fontSize: 16,
   },
 });
-
-export default Button;

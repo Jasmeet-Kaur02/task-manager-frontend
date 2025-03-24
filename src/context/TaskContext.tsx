@@ -4,20 +4,26 @@ import { getTasks } from "../api/tasks";
 const TaskContext = createContext({
   tasks: [],
   fetchTasks: () => null,
+  isLoading: false,
+  selectedTask: null,
+  setSelectedTask: (task: any) => null,
 });
 
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
   const fetchTasks = async () => {
+    setLoading(true);
     await getTasks()
       .then((res) => {
-        console.log(res);
         if (res.status) {
           setTasks(res.data);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -25,7 +31,9 @@ export function TaskProvider({ children }) {
   }, []);
 
   return (
-    <TaskContext.Provider value={{ tasks, fetchTasks }}>
+    <TaskContext.Provider
+      value={{ tasks, selectedTask, setSelectedTask, isLoading, fetchTasks }}
+    >
       {children}
     </TaskContext.Provider>
   );

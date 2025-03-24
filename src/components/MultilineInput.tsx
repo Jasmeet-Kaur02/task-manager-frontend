@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import { View, Text, StyleSheet } from "react-native";
 import { colors } from "../constants";
 
-export function Input({ label, placeholder, value, onChange }) {
+export function MultilineInput({ value, label, placeholder, onChange }) {
   const [focus, setFocus] = useState(false);
+
   return (
     <View style={styles.inputWrapper}>
       <Text style={styles.label}>{label}</Text>
@@ -12,6 +13,8 @@ export function Input({ label, placeholder, value, onChange }) {
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         value={value}
+        multiline={true}
+        numberOfLines={10}
         onChangeText={onChange}
         placeholder={placeholder}
         style={[
@@ -36,7 +39,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 12,
-    height: 50,
+    height: 120,
+    textAlignVertical: "top",
     fontSize: 16,
   },
 });

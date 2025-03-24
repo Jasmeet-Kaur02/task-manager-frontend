@@ -8,8 +8,9 @@ import {
 } from "react-native";
 import { signup } from "../../api/auth";
 import { colors } from "../../constants";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
+import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { PasswordInput } from "../../components/PasswordInput";
 import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../../context/UserContext";
 
@@ -83,7 +84,7 @@ function Signup() {
           onChange={(value) => onChangeInput("email", value)}
         />
         {errors?.email && <Text style={styles.error}>{errors?.email}</Text>}
-        <Input
+        <PasswordInput
           label="Password"
           placeholder="Password"
           value={data.password}

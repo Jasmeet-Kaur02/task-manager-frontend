@@ -4,18 +4,19 @@ import { colors } from "../constants";
 import { EvilIcons, MaterialIcons } from "@expo/vector-icons";
 import { StatusBadge } from "./StatusBadge";
 import { useNavigation } from "@react-navigation/native";
+import { useTask } from "../context/TaskContext";
 
 export function Card({ task }) {
   const { title, date, startTime, endTime, status } = task;
   const navigation = useNavigation();
+  const { setSelectedTask } = useTask();
 
   return (
     <TouchableWithoutFeedback
-      onPress={() =>
-        navigation.navigate("TaskDetails", {
-          taskId: task._id,
-        })
-      }
+      onPress={() => {
+        setSelectedTask(task);
+        navigation.navigate("TaskDetails" as never);
+      }}
     >
       <View style={styles.card}>
         <Text style={styles.title}>{title}</Text>
